@@ -5,6 +5,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/lib/db';
 import FileUpload from '@/components/FileUpload';
 import CollectionCard from '@/components/CollectionCard';
+import ExportImportBar from '@/components/ExportImportBar';
 
 type Mode = null | 'json' | 'manual';
 interface ManualItem { id: string; name: string; }
@@ -88,12 +89,15 @@ export default function HomePage() {
             <h1 className="text-2xl font-extrabold text-gray-900">My Collections</h1>
             <p className="text-sm text-gray-400 mt-0.5">콜렉팅 진행 상황을 기록하세요</p>
           </div>
-          <button
-            onClick={() => { setMode(mode ? null : 'json'); setManualError(''); }}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
-          >
-            {mode ? '✕ 닫기' : '+ 새 컬렉션'}
-          </button>
+          <div className="flex flex-col items-end gap-2">
+            <button
+              onClick={() => { setMode(mode ? null : 'json'); setManualError(''); }}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
+            >
+              {mode ? '✕ 닫기' : '+ 새 컬렉션'}
+            </button>
+            <ExportImportBar />
+          </div>
         </div>
 
         {/* 새 컬렉션 패널 */}
