@@ -7,7 +7,9 @@ import FileUpload from './FileUpload';
 import ExcelUpload from './ExcelUpload';
 
 type Mode = 'json' | 'excel' | 'manual';
-interface ManualItem { id: string; name: string; }
+interface ManualItem { id: string; name: string; imgSrc: string; }
+
+const EMPTY_MANUAL_ITEM: ManualItem = { id: '', name: '', imgSrc: '' };
 
 interface Props {
   onClose: () => void;
@@ -16,16 +18,27 @@ interface Props {
 export default function AddCollectionModal({ onClose }: Props) {
   const [mode, setMode] = useState<Mode>('json');
   const [manualName, setManualName] = useState('');
-  const [manualItems, setManualItems] = useState<ManualItem[]>([{ id: '', name: '' }]);
-  const [manualError, setManualError] = useState('');
+  const [manualItems, setManualItems] = useState<ManualItem[]>([{ ...EMPTY_MANUAL_ITEM }]);
+  const [nameError, setNameError] = useState('');
+  const [itemsError, setItemsError] = useState('');
   const [saving, setSaving] = useState(false);
 
   function updateManualItem(i: number, field: keyof ManualItem, value: string) {
-    setManualItems((prev) => prev.map((item, idx) => idx === i ? { ...item, [field]: value } : item));
+    setItemsError('');
+    setManualItems((prev) => {
+      const next = prev.map((item, idx) => idx === i ? { ...item, [field]: value } : item);
+      const updated = next[i];
+      const isLastRow = i === next.length - 1;
+      // ID와 이름이 모두 채워진 마지막 행이면 아래에 새 빈 행을 자동으로 추가
+      if (isLastRow && updated.id.trim() && updated.name.trim()) {
+        next.push({ ...EMPTY_MANUAL_ITEM });
+      }
+      return next;
+    });
   }
 
   function addManualItemRow() {
-    setManualItems((prev) => [...prev, { id: '', name: '' }]);
+    setManualItems((prev) => [...prev, { ...EMPTY_MANUAL_ITEM }]);
   }
 
   function removeManualItemRow(i: number) {
@@ -34,27 +47,43 @@ export default function AddCollectionModal({ onClose }: Props) {
 
   async function createManualCollection(e: React.FormEvent) {
     e.preventDefault();
-    if (!manualName.trim()) { setManualError('컬렉션 이름을 입력하세요.'); return; }
+    setNameError('');
+    setItemsError('');
+    if (!manualName.trim()) { setNameError('컬렉션 이름을 입력하세요.'); return; }
+
+    // 완전히 빈 행(자동 추가된 마지막 placeholder 등)은 무시하고,
+    // 일부만 채워진 행이 있으면 컬렉션을 만들지 않음
+    const meaningfulItems = manualItems.filter(
+      (item) => item.id.trim() || item.name.trim() || item.imgSrc.trim()
+    );
+    const hasIncompleteRow = meaningfulItems.some((item) => !item.id.trim() || !item.name.trim());
+    if (hasIncompleteRow) {
+      setItemsError('ID와 이름이 비어있는 행이 있어요. 모두 입력하거나 행을 삭제해주세요.');
+      return;
+    }
+    // 컬렉션 이름과 마찬가지로 ID/이름도 필수이므로, 아이템이 하나도 없으면 만들 수 없음
+    if (meaningfulItems.length === 0) {
+      setItemsError('아이템을 하나 이상 입력하세요 (ID, 이름 필수).');
+      return;
+    }
+
     setSaving(true);
     try {
-      const validItems = manualItems.filter((i) => i.id.trim() && i.name.trim());
       const collectionId = await db.collections.add({
         name: manualName.trim(),
         fileName: '직접 입력',
-        totalItems: validItems.length,
+        totalItems: meaningfulItems.length,
         createdAt: new Date(),
       });
-      if (validItems.length > 0) {
-        await db.items.bulkAdd(
-          validItems.map((item) => ({
-            collectionId: collectionId as number,
-            itemId: item.id.trim(),
-            name: item.name.trim(),
-            count: 0,
-            metadata: {},
-          }))
-        );
-      }
+      await db.items.bulkAdd(
+        meaningfulItems.map((item) => ({
+          collectionId: collectionId as number,
+          itemId: item.id.trim(),
+          name: item.name.trim(),
+          count: 0,
+          metadata: item.imgSrc.trim() ? { img_src: item.imgSrc.trim() } : {},
+        }))
+      );
       onClose();
     } finally {
       setSaving(false);
@@ -113,47 +142,56 @@ export default function AddCollectionModal({ onClose }: Props) {
               <label className="text-xs font-semibold text-gray-500 mb-1 block">컬렉션 이름 *</label>
               <input
                 value={manualName}
-                onChange={(e) => { setManualName(e.target.value); setManualError(''); }}
+                onChange={(e) => { setManualName(e.target.value); setNameError(''); }}
                 placeholder="예: 나만의 컬렉션"
                 className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
                 autoFocus
               />
-              {manualError && <p className="text-xs text-rose-500 mt-1">{manualError}</p>}
+              {nameError && <p className="text-xs text-rose-500 mt-1">{nameError}</p>}
             </div>
 
             {/* 아이템 목록 */}
             <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <label className="text-xs font-semibold text-gray-500">아이템 목록</label>
-                <span className="text-[10px] text-gray-300">(id, name 필수)</span>
-              </div>
+              <label className="text-xs font-semibold text-gray-500">아이템 목록</label>
               {/* 헤더 */}
-              <div className="grid grid-cols-[1fr_2fr_auto] gap-2 px-1">
-                <span className="text-[10px] font-semibold text-gray-400">ID</span>
-                <span className="text-[10px] font-semibold text-gray-400">이름</span>
+              <div className="grid grid-cols-[1fr_1.3fr_1.5fr_auto] gap-2 px-1">
+                <span className="text-[10px] font-semibold text-gray-400">
+                  ID <span className="font-normal text-gray-300">(필수)</span>
+                </span>
+                <span className="text-[10px] font-semibold text-gray-400">
+                  이름 <span className="font-normal text-gray-300">(필수)</span>
+                </span>
+                <span className="text-[10px] font-semibold text-gray-400">
+                  이미지 주소 <span className="font-normal text-gray-300">(선택)</span>
+                </span>
                 <span className="w-6" />
               </div>
               {/* 아이템 행 */}
               <div className="flex flex-col gap-2 max-h-52 overflow-y-auto pr-1">
                 {manualItems.map((item, i) => (
-                  <div key={i} className="grid grid-cols-[1fr_2fr_auto] gap-2 items-center">
+                  <div key={i} className="grid grid-cols-[1fr_1.3fr_1.5fr_auto] gap-2 items-center">
                     <input
                       value={item.id}
                       onChange={(e) => updateManualItem(i, 'id', e.target.value)}
                       placeholder="ID"
-                      className="border border-gray-200 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-300"
+                      className="min-w-0 border border-gray-200 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-300"
                     />
                     <input
                       value={item.name}
                       onChange={(e) => updateManualItem(i, 'name', e.target.value)}
                       placeholder="이름"
-                      className="border border-gray-200 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-300"
+                      className="min-w-0 border border-gray-200 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-300"
+                    />
+                    <input
+                      value={item.imgSrc}
+                      onChange={(e) => updateManualItem(i, 'imgSrc', e.target.value)}
+                      placeholder="https://..."
+                      className="min-w-0 border border-gray-200 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-300"
                     />
                     <button
                       type="button"
                       onClick={() => removeManualItemRow(i)}
-                      disabled={manualItems.length === 1}
-                      className="w-6 h-6 flex items-center justify-center text-gray-300 hover:text-rose-400 disabled:opacity-20 transition-colors"
+                      className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-rose-500 transition-colors"
                     >
                       <X size={14} />
                     </button>
@@ -168,6 +206,7 @@ export default function AddCollectionModal({ onClose }: Props) {
                 <Plus size={12} strokeWidth={2.5} />
                 행 추가
               </button>
+              {itemsError && <p className="text-xs text-rose-500">{itemsError}</p>}
             </div>
 
             <button
