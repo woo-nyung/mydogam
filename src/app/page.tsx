@@ -45,7 +45,6 @@ export default function HomePage() {
               className="flex items-center gap-1.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
             >
               <Plus size={16} strokeWidth={2.5} />
-              새 컬렉션
             </button>
             <SettingsMenu />
           </div>
@@ -60,7 +59,7 @@ export default function HomePage() {
             <p className="text-sm text-gray-300">JSON 업로드 또는 직접 입력으로 시작하세요</p>
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-2 gap-4">
             {collections.map((col) => (
               <CollectionCard
                 key={col.id}

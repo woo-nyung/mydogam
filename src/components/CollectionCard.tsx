@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef, useState } from 'react';
-import { Pencil, Download, X, ChevronRight } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Pencil, Download, X, ChevronRight, MoreVertical } from 'lucide-react';
 import { db } from '@/lib/db';
 import { type Collection } from '@/lib/types';
 import DeleteConfirmModal from './DeleteConfirmModal';
@@ -20,9 +20,22 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
   const [editing, setEditing] = useState(false);
   const [nameValue, setNameValue] = useState(collection.name);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, []);
 
   function startEdit() {
+    setMenuOpen(false);
     setEditing(true);
     setTimeout(() => inputRef.current?.select(), 0);
   }
@@ -44,6 +57,7 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
 
   // JSON 내보내기 (feature 4)
   async function handleExport() {
+    setMenuOpen(false);
     const items = await db.items.where('collectionId').equals(collection.id!).toArray();
     const exportData = {
       card_info: items.map((item) => ({
@@ -81,52 +95,67 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
               />
             ) : (
               <div className="flex items-center gap-1.5 group/name">
-                <h2 className="font-bold text-gray-800 text-base leading-snug truncate">
+                <h2 className="font-bold text-gray-800 text-base leading-snug line-clamp-2 break-all">
                   {collection.name}
                 </h2>
+              </div>
+            )}
+          </div>
+
+          {/* 액션 메뉴 */}
+          <div className="relative flex-shrink-0" ref={menuRef}>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+            >
+              <MoreVertical size={18} />
+            </button>
+            
+            {menuOpen && (
+              <div className="absolute right-0 top-full mt-1 w-40 bg-surface rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50 flex flex-col py-1">
+                {/* 파일 이름 표시 영역 */}
+                <div className="px-3 py-2 border-b border-gray-50 mb-1 cursor-default">
+                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-0.5">Source File</p>
+                  <p className="text-xs text-gray-600 truncate" title={collection.fileName}>
+                    {collection.fileName}
+                  </p>
+                </div>
+                
                 <button
                   onClick={startEdit}
-                  className="text-gray-300 hover:text-primary-400 transition-colors opacity-0 group-hover/name:opacity-100 flex-shrink-0"
-                  title="이름 수정"
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-app-bg text-left"
                 >
                   <Pencil size={14} />
+                  이름 수정
+                </button>
+                <button
+                  onClick={handleExport}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-app-bg text-left"
+                >
+                  <Download size={14} />
+                  내보내기
+                </button>
+                <button
+                  onClick={() => { setMenuOpen(false); setShowDeleteModal(true); }}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-rose-500 hover:bg-rose-50 text-left"
+                >
+                  <X size={14} />
+                  삭제
                 </button>
               </div>
             )}
-            <p className="text-xs text-gray-400 mt-0.5">{collection.fileName}</p>
-          </div>
-
-          {/* 액션 버튼 */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {/* 내보내기 버튼 */}
-            <button
-              onClick={handleExport}
-              title="JSON으로 내보내기"
-              className="text-gray-300 hover:text-primary-400 transition-colors"
-            >
-              <Download size={16} />
-            </button>
-            {/* 삭제 버튼 */}
-            <button
-              onClick={() => setShowDeleteModal(true)}
-              title="삭제"
-              className="text-gray-300 hover:text-rose-400 transition-colors"
-            >
-              <X size={18} />
-            </button>
           </div>
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <div className="flex justify-between text-xs text-gray-500">
-            <span>{ownedCount} / {total} 보유</span>
-            <span className="font-semibold text-primary-600">{pct}%</span>
-          </div>
-          <div className="w-full bg-gray-100 rounded-full h-2">
+          <div className="relative w-full bg-gray-100 rounded-full h-5 flex items-center justify-center overflow-hidden">
             <div
-              className="bg-primary-500 h-2 rounded-full transition-all duration-500"
+              className="absolute top-0 left-0 h-full bg-primary-500 transition-all duration-500"
               style={{ width: `${pct}%` }}
             />
+            <span className="relative z-10 text-[11px] font-bold text-white drop-shadow-[0_1px_1.5px_rgba(0,0,0,0.6)]">
+              {pct}%
+            </span>
           </div>
         </div>
 
@@ -134,7 +163,7 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
           href={`/collections/${collection.id}`}
           className="flex items-center justify-center gap-1 text-sm font-semibold text-primary-600 hover:text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-xl py-2 transition-colors"
         >
-          콜렉션 보기
+          {ownedCount} / {total} 보유
           <ChevronRight size={16} />
         </Link>
       </div>
