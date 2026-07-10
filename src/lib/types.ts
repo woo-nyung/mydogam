@@ -4,6 +4,7 @@ export interface Collection {
   fileName: string;
   totalItems: number;
   createdAt: Date;
+  coverImage?: string;
 }
 
 export interface CollectionItem {

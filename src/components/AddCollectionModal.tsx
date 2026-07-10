@@ -18,6 +18,7 @@ interface Props {
 export default function AddCollectionModal({ onClose }: Props) {
   const [mode, setMode] = useState<Mode>('json');
   const [manualName, setManualName] = useState('');
+  const [manualCoverImage, setManualCoverImage] = useState('');
   const [manualItems, setManualItems] = useState<ManualItem[]>([{ ...EMPTY_MANUAL_ITEM }]);
   const [nameError, setNameError] = useState('');
   const [itemsError, setItemsError] = useState('');
@@ -74,6 +75,7 @@ export default function AddCollectionModal({ onClose }: Props) {
         fileName: '직접 입력',
         totalItems: meaningfulItems.length,
         createdAt: new Date(),
+        ...(manualCoverImage.trim() ? { coverImage: manualCoverImage.trim() } : {}),
       });
       await db.items.bulkAdd(
         meaningfulItems.map((item) => ({
@@ -148,6 +150,19 @@ export default function AddCollectionModal({ onClose }: Props) {
                 autoFocus
               />
               {nameError && <p className="text-xs text-rose-500 mt-1">{nameError}</p>}
+            </div>
+
+            {/* 컬렉션 이미지 */}
+            <div>
+              <label className="text-xs font-semibold text-gray-500 mb-1 block">
+                컬렉션 이미지 링크 <span className="font-normal text-gray-300">(선택)</span>
+              </label>
+              <input
+                value={manualCoverImage}
+                onChange={(e) => setManualCoverImage(e.target.value)}
+                placeholder="https://..."
+                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
+              />
             </div>
 
             {/* 아이템 목록 */}
