@@ -80,8 +80,9 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
 
   return (
     <>
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-4">
-        <div className="flex items-start justify-between gap-2">
+      <div className="bg-gray-50 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-4 flex flex-col justify-between aspect-square min-w-[140px]">
+        <div className="bg-white border border-gray-200 rounded-xl p-3 flex flex-col gap-3">
+          <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             {editing ? (
               <input
@@ -110,7 +111,7 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
             >
               <MoreVertical size={18} />
             </button>
-            
+
             {menuOpen && (
               <div className="absolute right-0 top-full mt-1 w-40 bg-surface rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50 flex flex-col py-1">
                 {/* 파일 이름 표시 영역 */}
@@ -120,7 +121,7 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
                     {collection.fileName}
                   </p>
                 </div>
-                
+
                 <button
                   onClick={startEdit}
                   className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:bg-app-bg text-left"
@@ -157,6 +158,7 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
               {pct}%
             </span>
           </div>
+        </div>
         </div>
 
         <Link

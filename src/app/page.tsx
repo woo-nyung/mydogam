@@ -59,7 +59,7 @@ export default function HomePage() {
             <p className="text-sm text-gray-300">JSON 업로드 또는 직접 입력으로 시작하세요</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {collections.map((col) => (
               <CollectionCard
                 key={col.id}
