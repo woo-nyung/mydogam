@@ -1,35 +1,34 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { Loader2, FolderOpen } from 'lucide-react';
-import { parseCollectionJson } from '@/lib/parseJson';
+import { Loader2, FileSpreadsheet } from 'lucide-react';
+import { parseCollectionExcel } from '@/lib/parseExcel';
+import { parseCollectionCsv } from '@/lib/parseCsv';
 import { createCollectionFromItems } from '@/lib/collectionActions';
 
 interface Props {
   onSuccess: () => void;
 }
 
-export default function FileUpload({ onSuccess }: Props) {
+export default function ExcelUpload({ onSuccess }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleFile(file: File) {
-    if (!file.name.endsWith('.json')) {
-      setError('JSON 파일만 업로드할 수 있습니다.');
+    const isCsv = /\.csv$/i.test(file.name);
+    const isExcel = /\.(xlsx|xls)$/i.test(file.name);
+    if (!isCsv && !isExcel) {
+      setError('엑셀(.xlsx, .xls) 또는 CSV 파일만 업로드할 수 있습니다.');
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      const text = await file.text();
-      const json = JSON.parse(text);
-      const items = parseCollectionJson(json);
-
-      const collectionName = file.name.replace(/\.json$/i, '');
+      const items = isCsv ? await parseCollectionCsv(file) : await parseCollectionExcel(file);
+      const collectionName = file.name.replace(/\.(xlsx|xls|csv)$/i, '');
       await createCollectionFromItems(collectionName, file.name, items);
-
       onSuccess();
     } catch (e) {
       setError(e instanceof Error ? e.message : '파일 처리 중 오류가 발생했습니다.');
@@ -65,12 +64,16 @@ export default function FileUpload({ onSuccess }: Props) {
         {loading ? (
           <Loader2 size={36} className="text-gray-400 animate-spin" />
         ) : (
-          <FolderOpen size={36} className="text-gray-400" />
+          <FileSpreadsheet size={36} className="text-gray-400" />
         )}
         <p className="text-sm font-medium text-gray-600">
-          {loading ? '처리 중...' : 'JSON 파일을 드래그하거나 클릭해서 업로드'}
+          {loading ? '처리 중...' : '엑셀/CSV 파일을 드래그하거나 클릭해서 업로드'}
         </p>
-        <p className="text-xs text-gray-400">필수 키: id, name</p>
+        <p className="text-xs text-gray-400 text-center leading-relaxed">
+          첫 번째 행에 id, name 열 필요 · .xlsx / .xls / .csv
+          <br />
+          구글 시트는 파일 → 다운로드 → xlsx 또는 csv로 내보낸 후 업로드하세요
+        </p>
       </div>
 
       {error && (
@@ -80,7 +83,7 @@ export default function FileUpload({ onSuccess }: Props) {
       <input
         ref={inputRef}
         type="file"
-        accept=".json"
+        accept=".xlsx,.xls,.csv"
         className="hidden"
         onChange={onInputChange}
       />

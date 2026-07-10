@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { Pencil, X, ImageOff } from 'lucide-react';
 import { type CollectionItem } from '@/lib/types';
 import CountControl from './CountControl';
 
@@ -84,16 +85,16 @@ export default function ItemCard({ item, onCountChange, onEdit, onDelete }: Prop
         <button
           onClick={(e) => { e.stopPropagation(); onEdit(); }}
           title="수정"
-          className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-[11px] text-gray-500 hover:text-indigo-600 shadow-sm"
+          className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-gray-500 hover:text-indigo-600 shadow-sm"
         >
-          ✏
+          <Pencil size={11} />
         </button>
         <button
           onClick={(e) => { e.stopPropagation(); onDelete(); }}
           title="삭제"
-          className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-[11px] text-gray-500 hover:text-rose-500 shadow-sm"
+          className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-gray-500 hover:text-rose-500 shadow-sm"
         >
-          ✕
+          <X size={12} />
         </button>
       </div>
 
@@ -122,7 +123,9 @@ export default function ItemCard({ item, onCountChange, onEdit, onDelete }: Prop
               unoptimized
             />
           ) : (
-            <span className="text-gray-300 text-4xl flex items-center justify-center h-full">🃏</span>
+            <div className="text-gray-300 flex items-center justify-center h-full">
+              <ImageOff size={32} />
+            </div>
           )}
         </div>
 

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useRef, useState } from 'react';
+import { Pencil, Download, X, ChevronRight } from 'lucide-react';
 import { db } from '@/lib/db';
 import { type Collection } from '@/lib/types';
 import DeleteConfirmModal from './DeleteConfirmModal';
@@ -85,10 +86,10 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
                 </h2>
                 <button
                   onClick={startEdit}
-                  className="text-gray-300 hover:text-indigo-400 transition-colors opacity-0 group-hover/name:opacity-100 flex-shrink-0 text-sm"
+                  className="text-gray-300 hover:text-indigo-400 transition-colors opacity-0 group-hover/name:opacity-100 flex-shrink-0"
                   title="이름 수정"
                 >
-                  ✏️
+                  <Pencil size={14} />
                 </button>
               </div>
             )}
@@ -101,17 +102,17 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
             <button
               onClick={handleExport}
               title="JSON으로 내보내기"
-              className="text-gray-300 hover:text-indigo-400 transition-colors text-base leading-none"
+              className="text-gray-300 hover:text-indigo-400 transition-colors"
             >
-              ⬇
+              <Download size={16} />
             </button>
             {/* 삭제 버튼 */}
             <button
               onClick={() => setShowDeleteModal(true)}
               title="삭제"
-              className="text-gray-300 hover:text-rose-400 transition-colors text-lg leading-none"
+              className="text-gray-300 hover:text-rose-400 transition-colors"
             >
-              ✕
+              <X size={18} />
             </button>
           </div>
         </div>
@@ -131,9 +132,10 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
 
         <Link
           href={`/collections/${collection.id}`}
-          className="block text-center text-sm font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl py-2 transition-colors"
+          className="flex items-center justify-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl py-2 transition-colors"
         >
-          콜렉션 보기 →
+          콜렉션 보기
+          <ChevronRight size={16} />
         </Link>
       </div>
 

@@ -4,6 +4,7 @@ import { use, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
+import { ChevronLeft, Plus, X } from 'lucide-react';
 import { db } from '@/lib/db';
 import ItemCard from '@/components/ItemCard';
 import AddItemModal from '@/components/AddItemModal';
@@ -208,16 +209,18 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
         {/* 헤더 */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
-              ← 목록으로
+            <Link href="/" className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition-colors">
+              <ChevronLeft size={16} />
+              목록으로
             </Link>
             <h1 className="text-xl font-extrabold text-gray-900 mt-2">{collection.name}</h1>
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors flex-shrink-0 mt-6"
+            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors flex-shrink-0 mt-6"
           >
-            + 아이템 추가
+            <Plus size={16} strokeWidth={2.5} />
+            아이템 추가
           </button>
         </div>
 
@@ -249,9 +252,9 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
             {search && (
               <button
                 onClick={() => setSearch('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors text-lg leading-none"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors"
               >
-                ✕
+                <X size={16} />
               </button>
             )}
           </div>

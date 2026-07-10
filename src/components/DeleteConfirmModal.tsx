@@ -1,5 +1,7 @@
 'use client';
 
+import { Trash2 } from 'lucide-react';
+
 interface Props {
   title: string;
   description: React.ReactNode;
@@ -25,8 +27,8 @@ export default function DeleteConfirmModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col gap-2">
-          <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-2xl mb-1">
-            🗑️
+          <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center mb-1">
+            <Trash2 size={22} className="text-rose-500" />
           </div>
           <h2 className="font-bold text-gray-800 text-lg">{title}</h2>
           <p className="text-sm text-gray-500 leading-relaxed">{description}</p>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { X, Plus } from 'lucide-react';
 import { db } from '@/lib/db';
 
 interface Props {
@@ -90,8 +91,8 @@ export default function AddItemModal({ collectionId, onClose }: Props) {
       >
         <div className="flex items-center justify-between">
           <h2 className="font-bold text-gray-800 text-lg">아이템 직접 추가</h2>
-          <button onClick={onClose} className="text-gray-300 hover:text-gray-500 text-xl leading-none">
-            ✕
+          <button onClick={onClose} className="text-gray-300 hover:text-gray-500">
+            <X size={20} />
           </button>
         </div>
 
@@ -149,9 +150,9 @@ export default function AddItemModal({ collectionId, onClose }: Props) {
                   <button
                     type="button"
                     onClick={() => removeField(i)}
-                    className="text-gray-300 hover:text-rose-400 text-lg leading-none flex-shrink-0"
+                    className="text-gray-300 hover:text-rose-400 flex-shrink-0"
                   >
-                    ✕
+                    <X size={16} />
                   </button>
                 </div>
               ))}
@@ -161,9 +162,10 @@ export default function AddItemModal({ collectionId, onClose }: Props) {
           <button
             type="button"
             onClick={addField}
-            className="text-xs text-indigo-500 hover:text-indigo-700 text-left font-semibold"
+            className="flex items-center gap-1 text-xs text-indigo-500 hover:text-indigo-700 text-left font-semibold"
           >
-            + 속성 추가
+            <Plus size={12} strokeWidth={2.5} />
+            속성 추가
           </button>
 
           {error && (
