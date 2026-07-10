@@ -32,7 +32,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-app-bg">
       <div className="max-w-2xl mx-auto px-4 py-10">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -42,7 +42,7 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
+              className="flex items-center gap-1.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
             >
               <Plus size={16} strokeWidth={2.5} />
               새 컬렉션

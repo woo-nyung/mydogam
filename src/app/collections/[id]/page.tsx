@@ -190,20 +190,20 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
   const pct = totalCount > 0 ? Math.round((ownedCount / totalCount) * 100) : 0;
 
   if (collection === undefined || items === undefined) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-300">로딩 중...</div>;
+    return <div className="min-h-screen bg-app-bg flex items-center justify-center text-gray-300">로딩 중...</div>;
   }
 
   if (collection === null) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen bg-app-bg flex flex-col items-center justify-center gap-4">
         <p className="text-gray-400">컬렉션을 찾을 수 없습니다.</p>
-        <Link href="/" className="text-indigo-600 hover:underline text-sm">홈으로 돌아가기</Link>
+        <Link href="/" className="text-primary-600 hover:underline text-sm">홈으로 돌아가기</Link>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-app-bg">
       <div className="max-w-5xl mx-auto px-4 py-8">
 
         {/* 헤더 */}
@@ -217,7 +217,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors flex-shrink-0 mt-6"
+            className="flex items-center gap-1.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors flex-shrink-0 mt-6"
           >
             <Plus size={16} strokeWidth={2.5} />
             아이템 추가
@@ -225,16 +225,16 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
         </div>
 
         {/* 통계 */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-5 mb-5 flex flex-col gap-3">
+        <div className="bg-surface rounded-2xl border border-gray-200 p-5 mb-5 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-500">
-              <span className="text-indigo-600 font-bold text-lg">{ownedCount}</span>
+              <span className="text-primary-600 font-bold text-lg">{ownedCount}</span>
               <span className="text-gray-400"> / {totalCount} 보유</span>
             </span>
-            <span className="text-indigo-600 font-bold text-lg">{pct}%</span>
+            <span className="text-primary-600 font-bold text-lg">{pct}%</span>
           </div>
           <div className="w-full bg-gray-100 rounded-full h-2.5">
-            <div className="bg-indigo-500 h-2.5 rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
+            <div className="bg-primary-500 h-2.5 rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
           </div>
         </div>
 
@@ -246,7 +246,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
               placeholder="이름 또는 ID로 검색..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-300 bg-surface"
             />
             {/* 검색 지우기 버튼 (feature 5) */}
             {search && (
@@ -262,7 +262,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
           <select
             value={sortKey}
             onChange={(e) => setSortKey(e.target.value as SortKey)}
-            className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-600 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300 cursor-pointer"
+            className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-600 bg-surface focus:outline-none focus:ring-2 focus:ring-primary-300 cursor-pointer"
           >
             <option value="id_asc">ID 오름차순</option>
             <option value="id_desc">ID 내림차순</option>
@@ -273,7 +273,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
 
         {/* 필터 칩 */}
         {(allPackTypes.length > 0 || allTans.length > 0 || allTypes.length > 0 || allRarities.length > 0) && (
-          <div className="bg-white rounded-2xl border border-gray-200 p-4 mb-4 flex flex-col gap-3">
+          <div className="bg-surface rounded-2xl border border-gray-200 p-4 mb-4 flex flex-col gap-3">
             {/* 팩 종류 필터 */}
             {allPackTypes.length > 0 && (
               <div className="flex items-center gap-2 flex-wrap">
@@ -284,7 +284,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
                     onClick={() => toggle(setSelectedPackTypes, p)}
                     className={`text-xs font-semibold px-3 py-1 rounded-full transition-colors ${
                       selectedPackTypes.has(p)
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-primary-600 text-white'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >
@@ -303,7 +303,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
                     onClick={() => toggle(setSelectedTans, tan)}
                     className={`text-xs font-semibold px-3 py-1 rounded-full transition-colors ${
                       selectedTans.has(tan)
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-primary-600 text-white'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >
@@ -322,7 +322,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
                     onClick={() => toggle(setSelectedTypes, t)}
                     className={`text-xs font-semibold px-3 py-1 rounded-full transition-colors ${
                       selectedTypes.has(t)
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-primary-600 text-white'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >
@@ -341,7 +341,7 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
                     onClick={() => toggle(setSelectedRarities, r)}
                     className={`text-xs font-semibold px-3 py-1 rounded-full transition-colors ${
                       selectedRarities.has(r)
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-primary-600 text-white'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >
@@ -354,13 +354,13 @@ export default function CollectionPage({ params }: { params: Promise<{ id: strin
         )}
 
         {/* 보유 필터 탭 */}
-        <div className="flex rounded-xl border border-gray-200 bg-white overflow-hidden mb-6">
+        <div className="flex rounded-xl border border-gray-200 bg-surface overflow-hidden mb-6">
           {(['전체', '보유', '미보유'] as OwnedFilter[]).map((f) => (
             <button
               key={f}
               onClick={() => setOwnedFilter(f)}
               className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
-                ownedFilter === f ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'
+                ownedFilter === f ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-app-bg'
               }`}
             >
               {f}

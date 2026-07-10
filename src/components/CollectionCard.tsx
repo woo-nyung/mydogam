@@ -76,7 +76,7 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
                 onChange={(e) => setNameValue(e.target.value)}
                 onBlur={commitEdit}
                 onKeyDown={handleKeyDown}
-                className="w-full font-bold text-gray-800 text-base border-b-2 border-indigo-400 focus:outline-none bg-transparent pb-0.5"
+                className="w-full font-bold text-gray-800 text-base border-b-2 border-primary-400 focus:outline-none bg-transparent pb-0.5"
                 autoFocus
               />
             ) : (
@@ -86,7 +86,7 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
                 </h2>
                 <button
                   onClick={startEdit}
-                  className="text-gray-300 hover:text-indigo-400 transition-colors opacity-0 group-hover/name:opacity-100 flex-shrink-0"
+                  className="text-gray-300 hover:text-primary-400 transition-colors opacity-0 group-hover/name:opacity-100 flex-shrink-0"
                   title="이름 수정"
                 >
                   <Pencil size={14} />
@@ -102,7 +102,7 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
             <button
               onClick={handleExport}
               title="JSON으로 내보내기"
-              className="text-gray-300 hover:text-indigo-400 transition-colors"
+              className="text-gray-300 hover:text-primary-400 transition-colors"
             >
               <Download size={16} />
             </button>
@@ -120,11 +120,11 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
         <div className="flex flex-col gap-1.5">
           <div className="flex justify-between text-xs text-gray-500">
             <span>{ownedCount} / {total} 보유</span>
-            <span className="font-semibold text-indigo-600">{pct}%</span>
+            <span className="font-semibold text-primary-600">{pct}%</span>
           </div>
           <div className="w-full bg-gray-100 rounded-full h-2">
             <div
-              className="bg-indigo-500 h-2 rounded-full transition-all duration-500"
+              className="bg-primary-500 h-2 rounded-full transition-all duration-500"
               style={{ width: `${pct}%` }}
             />
           </div>
@@ -132,7 +132,7 @@ export default function CollectionCard({ collection, ownedCount, onDelete }: Pro
 
         <Link
           href={`/collections/${collection.id}`}
-          className="flex items-center justify-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl py-2 transition-colors"
+          className="flex items-center justify-center gap-1 text-sm font-semibold text-primary-600 hover:text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-xl py-2 transition-colors"
         >
           콜렉션 보기
           <ChevronRight size={16} />

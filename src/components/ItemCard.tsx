@@ -85,7 +85,7 @@ export default function ItemCard({ item, onCountChange, onEdit, onDelete }: Prop
         <button
           onClick={(e) => { e.stopPropagation(); onEdit(); }}
           title="수정"
-          className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-gray-500 hover:text-indigo-600 shadow-sm"
+          className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-gray-500 hover:text-primary-600 shadow-sm"
         >
           <Pencil size={11} />
         </button>
@@ -101,12 +101,12 @@ export default function ItemCard({ item, onCountChange, onEdit, onDelete }: Prop
       {/* 카드 본체: 고정 사이즈 */}
       <div
         className={`rounded-xl border-2 bg-white flex flex-col overflow-hidden transition-all duration-200 ${
-          owned ? 'border-indigo-400 shadow-md shadow-indigo-100' : 'border-gray-200 opacity-60'
+          owned ? 'border-primary-400 shadow-md shadow-primary-100' : 'border-gray-200 opacity-60'
         }`}
       >
         {/* 보유 뱃지 */}
         {owned && (
-          <div className="absolute top-2 right-2 z-10 bg-indigo-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+          <div className="absolute top-2 right-2 z-10 bg-primary-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
             보유{item.count > 1 ? ` ×${item.count}` : ''}
           </div>
         )}

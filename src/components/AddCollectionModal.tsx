@@ -81,21 +81,21 @@ export default function AddCollectionModal({ onClose }: Props) {
         <div className="flex rounded-xl border border-gray-200 overflow-hidden flex-shrink-0">
           <button
             onClick={() => setMode('json')}
-            className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors ${mode === 'json' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+            className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors ${mode === 'json' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
           >
             <FolderOpen size={16} />
             JSON
           </button>
           <button
             onClick={() => setMode('excel')}
-            className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors ${mode === 'excel' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+            className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors ${mode === 'excel' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
           >
             <FileSpreadsheet size={16} />
             엑셀/시트
           </button>
           <button
             onClick={() => setMode('manual')}
-            className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors ${mode === 'manual' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+            className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors ${mode === 'manual' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
           >
             <Pencil size={16} />
             직접 입력
@@ -115,7 +115,7 @@ export default function AddCollectionModal({ onClose }: Props) {
                 value={manualName}
                 onChange={(e) => { setManualName(e.target.value); setManualError(''); }}
                 placeholder="예: 나만의 컬렉션"
-                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
                 autoFocus
               />
               {manualError && <p className="text-xs text-rose-500 mt-1">{manualError}</p>}
@@ -141,13 +141,13 @@ export default function AddCollectionModal({ onClose }: Props) {
                       value={item.id}
                       onChange={(e) => updateManualItem(i, 'id', e.target.value)}
                       placeholder="ID"
-                      className="border border-gray-200 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                      className="border border-gray-200 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-300"
                     />
                     <input
                       value={item.name}
                       onChange={(e) => updateManualItem(i, 'name', e.target.value)}
                       placeholder="이름"
-                      className="border border-gray-200 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                      className="border border-gray-200 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-300"
                     />
                     <button
                       type="button"
@@ -163,7 +163,7 @@ export default function AddCollectionModal({ onClose }: Props) {
               <button
                 type="button"
                 onClick={addManualItemRow}
-                className="flex items-center gap-1 text-xs text-indigo-500 hover:text-indigo-700 font-semibold text-left mt-1"
+                className="flex items-center gap-1 text-xs text-primary-500 hover:text-primary-700 font-semibold text-left mt-1"
               >
                 <Plus size={12} strokeWidth={2.5} />
                 행 추가
@@ -173,7 +173,7 @@ export default function AddCollectionModal({ onClose }: Props) {
             <button
               type="submit"
               disabled={saving}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors disabled:opacity-50"
+              className="bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors disabled:opacity-50"
             >
               {saving ? '저장 중...' : '컬렉션 만들기'}
             </button>

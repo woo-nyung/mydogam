@@ -22,7 +22,7 @@ export default function CountControl({ count, onChange }: Props) {
       </span>
       <button
         onClick={(e) => { e.stopPropagation(); onChange(count + 1); }}
-        className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center hover:bg-indigo-200 transition-colors"
+        className="w-7 h-7 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center hover:bg-primary-200 transition-colors"
       >
         <Plus size={14} strokeWidth={2.5} />
       </button>

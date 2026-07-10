@@ -103,7 +103,7 @@ export default function AddItemModal({ collectionId, onClose }: Props) {
               value={itemId}
               onChange={(e) => setItemId(e.target.value)}
               placeholder="예: HV-12-001"
-              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
             />
           </div>
 
@@ -113,7 +113,7 @@ export default function AddItemModal({ collectionId, onClose }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="예: 히나타 쇼요"
-              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
             />
           </div>
 
@@ -123,7 +123,7 @@ export default function AddItemModal({ collectionId, onClose }: Props) {
               value={detail}
               onChange={(e) => setDetail(e.target.value)}
               placeholder="소속:카라스노 / 학년:1학년 / 포지션:MB"
-              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
             />
             <p className="text-[10px] text-gray-400 mt-1">
               형식: <span className="font-mono">key:value / key:value / ...</span>
@@ -139,13 +139,13 @@ export default function AddItemModal({ collectionId, onClose }: Props) {
                     value={field.key}
                     onChange={(e) => updateField(i, e.target.value, field.value)}
                     placeholder="키"
-                    className="w-28 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    className="w-28 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-300"
                   />
                   <input
                     value={field.value}
                     onChange={(e) => updateField(i, field.key, e.target.value)}
                     placeholder="값"
-                    className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary-300"
                   />
                   <button
                     type="button"
@@ -162,7 +162,7 @@ export default function AddItemModal({ collectionId, onClose }: Props) {
           <button
             type="button"
             onClick={addField}
-            className="flex items-center gap-1 text-xs text-indigo-500 hover:text-indigo-700 text-left font-semibold"
+            className="flex items-center gap-1 text-xs text-primary-500 hover:text-primary-700 text-left font-semibold"
           >
             <Plus size={12} strokeWidth={2.5} />
             속성 추가
@@ -183,7 +183,7 @@ export default function AddItemModal({ collectionId, onClose }: Props) {
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-2.5 text-sm font-semibold transition-colors disabled:opacity-50"
+              className="flex-1 bg-primary-600 hover:bg-primary-700 text-white rounded-xl py-2.5 text-sm font-semibold transition-colors disabled:opacity-50"
             >
               {saving ? '저장 중...' : '추가'}
             </button>
