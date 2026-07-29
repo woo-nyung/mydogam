@@ -14,12 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Collectr",
+  title: "마이도감",
   description: "콜렉팅 진행 상황 기록 앱",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Collectr",
+    title: "마이도감",
   },
   icons: {
     icon: [

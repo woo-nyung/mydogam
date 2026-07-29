@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Settings } from 'lucide-react';
+import { Hexagon } from 'lucide-react';
 import { downloadBackup, exportBackup, parseBackupFile, restoreBackup, type BackupFile } from '@/lib/backup';
 import DeleteConfirmModal from '@/components/DeleteConfirmModal';
 
@@ -75,9 +75,9 @@ export default function SettingsMenu() {
       <button
         onClick={() => setOpen((v) => !v)}
         title="설정"
-        className="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-gray-700 border border-gray-200 rounded-xl transition-colors"
+        className="w-9 h-9 flex items-center justify-center text-gray-700 hover:text-gray-900 transition-colors"
       >
-        <Settings size={18} />
+        <Hexagon size={24} strokeWidth={2} />
       </button>
 
       {open && (

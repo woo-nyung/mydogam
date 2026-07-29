@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
 import { Pencil, X, ImageOff } from 'lucide-react';
 import { type CollectionItem } from '@/lib/types';
 import CountControl from './CountControl';
@@ -25,12 +26,14 @@ const KNOWN_META_KEYS = new Set(['img_src', 'rarity', 'type', 'detail']);
 
 interface Props {
   item: CollectionItem;
+  mode: 'view' | 'edit';
   onCountChange: (count: number) => void;
   onEdit: () => void;
   onDelete: () => void;
 }
 
-export default function ItemCard({ item, onCountChange, onEdit, onDelete }: Props) {
+export default function ItemCard({ item, mode, onCountChange, onEdit, onDelete }: Props) {
+  const [flipped, setFlipped] = useState(false);
   const meta = item.metadata;
   const imgSrc = typeof meta.img_src === 'string' ? meta.img_src : null;
   const rarity = typeof meta.rarity === 'string' ? meta.rarity : null;
@@ -42,130 +45,102 @@ export default function ItemCard({ item, onCountChange, onEdit, onDelete }: Prop
       ? (Object.entries(detailRaw as Record<string, unknown>).map(([k, v]) => [k, String(v)] as [string, string]))
       : null;
   const owned = item.count > 0;
-
   const extraMeta = Object.entries(meta).filter(([k]) => !KNOWN_META_KEYS.has(k));
+
+  const canFlip = mode === 'view';
+  const isFlipped = canFlip && flipped;
 
   return (
     <div className="relative group">
-      {/* Hover 툴팁 */}
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 z-50 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 pointer-events-none">
-        <div className="bg-gray-900 text-white rounded-xl p-3 shadow-2xl flex flex-col gap-1.5">
-          <p className="font-semibold text-xs leading-snug">{item.name}</p>
-          <p className="text-gray-400 text-[10px] font-mono">{item.itemId}</p>
-          {detailEntries && detailEntries.map(([k, v]) => (
-            <div key={k} className="flex gap-1 text-[10px]">
-              <span className="text-gray-400 flex-shrink-0">{k}:</span>
-              <span className="text-gray-200">{v}</span>
-            </div>
-          ))}
-          {detailStr && <p className="text-gray-300 text-[10px] leading-snug">{detailStr}</p>}
-          <div className="flex flex-wrap gap-1 mt-0.5">
-            {rarity && (
-              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${RARITY_STYLES[rarity] ?? 'bg-gray-600 text-white'}`}>
-                {rarity}
-              </span>
-            )}
-            {type && <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">{type}</span>}
-          </div>
-          {extraMeta.map(([k, v]) => (
-            <div key={k} className="flex gap-1 text-[10px]">
-              <span className="text-gray-400 flex-shrink-0">{k}:</span>
-              <span className="text-gray-200 truncate">{String(v)}</span>
-            </div>
-          ))}
-          <div className="border-t border-white/10 pt-1.5 mt-0.5 text-[10px] text-gray-400">
-            보유 수량: <span className="text-white font-semibold">{item.count}</span>
-          </div>
+      {/* 편집/삭제 버튼: 편집 모드일 때만 우측 상단에 표시 */}
+      {mode === 'edit' && (
+        <div className="absolute top-2 right-2 z-20 flex gap-1">
+          <button
+            onClick={(e) => { e.stopPropagation(); onEdit(); }}
+            title="수정"
+            className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-gray-500 hover:text-primary-600 shadow-sm"
+          >
+            <Pencil size={11} />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onDelete(); }}
+            title="삭제"
+            className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-gray-500 hover:text-rose-500 shadow-sm"
+          >
+            <X size={12} />
+          </button>
         </div>
-        <div className="mx-auto w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] border-t-gray-900" />
-      </div>
+      )}
 
-      {/* 편집/삭제 버튼 (hover 시 표시) */}
-      <div className="absolute top-2 left-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-        <button
-          onClick={(e) => { e.stopPropagation(); onEdit(); }}
-          title="수정"
-          className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-gray-500 hover:text-primary-600 shadow-sm"
+      {/* 카드: 앞면(이미지) / 뒷면(정보) 플립 */}
+      <div className="[perspective:1200px]">
+        <div
+          onClick={() => canFlip && setFlipped((f) => !f)}
+          className={`relative w-full aspect-[3/4] transition-transform duration-500 [transform-style:preserve-3d] ${canFlip ? 'cursor-pointer' : ''
+            } ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
         >
-          <Pencil size={11} />
-        </button>
-        <button
-          onClick={(e) => { e.stopPropagation(); onDelete(); }}
-          title="삭제"
-          className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-gray-500 hover:text-rose-500 shadow-sm"
-        >
-          <X size={12} />
-        </button>
-      </div>
-
-      {/* 카드 본체: 고정 사이즈 */}
-      <div
-        className={`rounded-xl border-2 bg-white flex flex-col overflow-hidden transition-all duration-200 ${
-          owned ? 'border-primary-400 shadow-md shadow-primary-100' : 'border-gray-200 opacity-60'
-        }`}
-      >
-        {/* 보유 뱃지 */}
-        {owned && (
-          <div className="absolute top-2 right-2 z-10 bg-primary-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-            보유{item.count > 1 ? ` ×${item.count}` : ''}
+          {/* 앞면 (opacity는 이 얼굴에만 적용: 회전 컨테이너에 걸면 backface-visibility가 깨짐) */}
+          <div className={`absolute inset-0 rounded-xl border-2 border-gray-200 bg-gray-100 overflow-hidden [backface-visibility:hidden] ${owned ? '' : 'opacity-40'}`}>
+            {imgSrc ? (
+              <Image
+                src={imgSrc}
+                alt={item.name}
+                fill
+                className="object-contain"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                unoptimized
+              />
+            ) : (
+              <div className="text-gray-300 flex items-center justify-center h-full">
+                <ImageOff size={32} />
+              </div>
+            )}
           </div>
-        )}
 
-        {/* 이미지: 세로 기준 3:4 고정 비율 */}
-        <div className="relative w-full aspect-[3/4] bg-gray-100 overflow-hidden flex-shrink-0">
-          {imgSrc ? (
-            <Image
-              src={imgSrc}
-              alt={item.name}
-              fill
-              className="object-contain"
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-              unoptimized
-            />
-          ) : (
-            <div className="text-gray-300 flex items-center justify-center h-full">
-              <ImageOff size={32} />
+          {/* 뒷면: 카드 정보 */}
+          <div className="absolute inset-0 rounded-xl border-2 border-gray-200 bg-white overflow-hidden [backface-visibility:hidden] [transform:rotateY(180deg)] p-3 flex flex-col gap-1.5">
+            <div className="flex flex-wrap gap-1 flex-shrink-0">
+              {rarity && (
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${RARITY_STYLES[rarity] ?? 'bg-gray-200 text-gray-600'}`}>
+                  {rarity}
+                </span>
+              )}
+              {type && (
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${TYPE_STYLES[type] ?? 'bg-gray-100 text-gray-600'}`}>
+                  {type}
+                </span>
+              )}
             </div>
-          )}
-        </div>
-
-        {/* 정보 영역: 고정 높이 */}
-        <div className="flex flex-col p-3 gap-1.5 h-[148px] overflow-hidden">
-          {/* 뱃지 */}
-          <div className="flex flex-wrap gap-1 flex-shrink-0">
-            {rarity && (
-              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${RARITY_STYLES[rarity] ?? 'bg-gray-200 text-gray-600'}`}>
-                {rarity}
-              </span>
-            )}
-            {type && (
-              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${TYPE_STYLES[type] ?? 'bg-gray-100 text-gray-600'}`}>
-                {type}
-              </span>
-            )}
-          </div>
-          {/* 이름: 최대 2줄 */}
-          <p className="text-xs font-semibold text-gray-800 leading-snug line-clamp-2 flex-shrink-0">
-            {item.name}
-          </p>
-          {/* 세부 정보: 최대 1줄 */}
-          {detailEntries && (
-            <p className="text-[10px] text-gray-400 leading-snug line-clamp-1 flex-shrink-0">
-              {detailEntries.map(([k, v]) => `${k}: ${v}`).join(' · ')}
+            <p className="text-xs font-semibold text-gray-800 leading-snug line-clamp-2 flex-shrink-0">
+              {item.name}
             </p>
-          )}
-          {detailStr && (
-            <p className="text-[10px] text-gray-400 leading-snug line-clamp-1 flex-shrink-0">{detailStr}</p>
-          )}
-          {/* ID */}
-          <p className="text-[10px] text-gray-300 font-mono truncate flex-shrink-0">{item.itemId}</p>
-
-          {/* count 컨트롤: 항상 하단 고정 */}
-          <div className="mt-auto pt-1 border-t border-gray-100 flex justify-center flex-shrink-0">
-            <CountControl count={item.count} onChange={onCountChange} />
+            {detailEntries && (
+              <p className="text-[10px] text-gray-400 leading-snug line-clamp-2 flex-shrink-0">
+                {detailEntries.map(([k, v]) => `${k}: ${v}`).join(' · ')}
+              </p>
+            )}
+            {detailStr && (
+              <p className="text-[10px] text-gray-400 leading-snug line-clamp-2 flex-shrink-0">{detailStr}</p>
+            )}
+            {extraMeta.map(([k, v]) => (
+              <p key={k} className="text-[10px] text-gray-400 truncate flex-shrink-0">
+                <span className="text-gray-300">{k}:</span> {String(v)}
+              </p>
+            ))}
+            <p className="text-[10px] text-gray-300 font-mono truncate flex-shrink-0">{item.itemId}</p>
+            <p className="mt-auto text-[10px] text-gray-400 flex-shrink-0">
+              보유 수량: <span className="font-semibold text-gray-700">{item.count}</span>
+            </p>
           </div>
         </div>
       </div>
+
+      {/* count 컨트롤: 편집 모드, 카드 이미지 하단에 겹쳐서 표시 */}
+      {mode === 'edit' && (
+        <div className="absolute bottom-0 inset-x-0 z-10 flex justify-center py-2 bg-white/90 backdrop-blur-sm rounded-b-xl opacity-80">
+          <CountControl count={item.count} onChange={onCountChange} />
+        </div>
+      )}
     </div>
   );
 }

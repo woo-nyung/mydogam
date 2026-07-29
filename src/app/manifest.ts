@@ -2,9 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Collectr",
-    short_name: "Collectr",
+    name: "마이도감",
+    short_name: "마이도감",
     description: "콜렉팅 진행 상황 기록 앱",
+    id: "mydogam",
     start_url: "/",
     display: "standalone",
     background_color: "#0f172a",

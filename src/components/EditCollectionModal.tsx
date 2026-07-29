@@ -12,7 +12,6 @@ interface Props {
 
 export default function EditCollectionModal({ collection, onClose }: Props) {
   const [name, setName] = useState(collection.name);
-  const [coverImage, setCoverImage] = useState(collection.coverImage ?? '');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -23,10 +22,7 @@ export default function EditCollectionModal({ collection, onClose }: Props) {
 
     setSaving(true);
     try {
-      await db.collections.update(collection.id!, {
-        name: trimmed,
-        coverImage: coverImage.trim() || undefined,
-      });
+      await db.collections.update(collection.id!, { name: trimmed });
       onClose();
     } finally {
       setSaving(false);
@@ -60,18 +56,6 @@ export default function EditCollectionModal({ collection, onClose }: Props) {
               autoFocus
             />
             {error && <p className="text-xs text-rose-500 mt-1">{error}</p>}
-          </div>
-
-          <div>
-            <label className="text-xs font-semibold text-gray-500 mb-1 block">
-              컬렉션 이미지 링크 <span className="font-normal text-gray-300">(선택)</span>
-            </label>
-            <input
-              value={coverImage}
-              onChange={(e) => setCoverImage(e.target.value)}
-              placeholder="https://..."
-              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
-            />
           </div>
 
           <div className="flex gap-3 pt-1">
