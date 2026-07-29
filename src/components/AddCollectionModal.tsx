@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { X, FolderOpen, FileSpreadsheet, Pencil, Plus } from 'lucide-react';
+import { X, FolderOpen, FileSpreadsheet, Pencil, Plus, Download } from 'lucide-react';
 import { db } from '@/lib/db';
 import FileUpload from './FileUpload';
 import ExcelUpload from './ExcelUpload';
+import PresetCollectionPicker from './PresetCollectionPicker';
 
-type Mode = 'json' | 'excel' | 'manual';
+type Mode = 'preset' | 'json' | 'excel' | 'manual';
 interface ManualItem { id: string; name: string; imgSrc: string; }
 
 const EMPTY_MANUAL_ITEM: ManualItem = { id: '', name: '', imgSrc: '' };
@@ -16,7 +17,7 @@ interface Props {
 }
 
 export default function AddCollectionModal({ onClose }: Props) {
-  const [mode, setMode] = useState<Mode>('json');
+  const [mode, setMode] = useState<Mode>('preset');
   const [manualName, setManualName] = useState('');
   const [manualItems, setManualItems] = useState<ManualItem[]>([{ ...EMPTY_MANUAL_ITEM }]);
   const [nameError, setNameError] = useState('');
@@ -109,6 +110,13 @@ export default function AddCollectionModal({ onClose }: Props) {
         {/* 탭 */}
         <div className="flex rounded-xl border border-gray-200 overflow-hidden flex-shrink-0">
           <button
+            onClick={() => setMode('preset')}
+            className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors ${mode === 'preset' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+          >
+            <Download size={16} />
+            받기
+          </button>
+          <button
             onClick={() => setMode('json')}
             className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors ${mode === 'json' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
           >
@@ -130,6 +138,8 @@ export default function AddCollectionModal({ onClose }: Props) {
             직접 입력
           </button>
         </div>
+
+        {mode === 'preset' && <PresetCollectionPicker onSuccess={onClose} />}
 
         {mode === 'json' && <FileUpload onSuccess={onClose} />}
 
